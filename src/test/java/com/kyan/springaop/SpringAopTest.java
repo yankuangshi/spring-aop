@@ -3,6 +3,7 @@ package com.kyan.springaop;
 import com.kyan.springaop.dao.OrderDao;
 import com.kyan.springaop.dao.ProductDao;
 import com.kyan.springaop.dao.UserDao;
+import com.kyan.springaop.service.UserService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -70,5 +71,25 @@ public class SpringAopTest {
         //log before
         //add new product
         //log after
+    }
+
+    @Test
+    public void testAopMonitorTime() {
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("spring-aop.xml");
+        UserService userService = (UserService) ctx.getBean("userService");
+        userService.login();
+        //开始执行: com.kyan.springaop.service.UserServiceImpl#login
+        //模拟用户登录
+        //结束执行: com.kyan.springaop.service.UserServiceImpl#login
+        //MonitorTime{className='com.kyan.springaop.service.UserServiceImpl', methodName='login', logTime=Fri Nov 01 15:53:52 CST 2019, consumeTime=1004}
+    }
+
+    @Test
+    public void testAopMonitorException() {
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("spring-aop.xml");
+        UserService userService = (UserService) ctx.getBean("userService");
+        userService.doSomethingWrong();
+        //模拟抛出异常
+        //ExceptionMonitor{className='com.kyan.springaop.service.UserServiceImpl', methodName='null', logTime=Fri Nov 01 16:09:42 CST 2019, message='java.lang.ArithmeticException: / by zero'}
     }
 }
